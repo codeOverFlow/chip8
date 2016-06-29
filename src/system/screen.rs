@@ -3,24 +3,24 @@ use std::ptr;
 use std::fmt;
 
 
-const W: u8 = 64;
-const H: u8 = 32;
+pub const W: u8 = 64;
+pub const H: u8 = 32;
 
 #[derive(Copy, Clone)]
 pub struct Position {
-    x: u8,
-    y: u8,
+    pub x: u8,
+    pub y: u8,
 }
 
 #[derive(Copy, Clone)]
 pub struct Pixel {
-    position: Position,
-    couleur: char,
+    pub position: Position,
+    pub couleur: char,
 }
 
 #[derive(Copy, Clone)]
 pub struct Screen {
-    screen: [[Pixel; W as usize]; H as usize],
+    pub screen: [[Pixel; W as usize]; H as usize],
 }
 
 

@@ -1,17 +1,18 @@
 use std::fmt;
 
 const MEMORY_SIZE: usize = 4096;
-const ENTRY_POINT: u16 = 0x200;
+pub const ENTRY_POINT: u16 = 0x200;
 const NB_OPCODE: u16 = 35;
 
 pub struct Cpu {
-    memory: [u8; MEMORY_SIZE],
-    pc: u16,
-    v: [u8; 16],
-    i: u16,
-    stack: Vec<u16>,
-    compteur_jeu: u8,
-    compteur_son: u8,
+    pub memory: [u8; MEMORY_SIZE],
+    pub pc: u16,
+    pub v: [u8; 16],
+    pub i: u16,
+    pub stack: Vec<u16>,
+    pub compteur_jeu: u8,
+    pub compteur_son: u8,
+    pub jump: Jump,
 }
 
 impl fmt::Display for Cpu {
@@ -35,7 +36,7 @@ impl fmt::Display for Cpu {
 }
 
 pub fn init_cpu() -> Cpu {
-    return Cpu{memory: [0;MEMORY_SIZE], pc: ENTRY_POINT, v: [0;16], i: 0, stack: Vec::new(), compteur_jeu: 0, compteur_son: 0};
+    return Cpu{memory: [0;MEMORY_SIZE], pc: ENTRY_POINT, v: [0;16], i: 0, stack: Vec::new(), compteur_jeu: 0, compteur_son: 0, jump: init_jump()};
 }
 
 impl Cpu {
@@ -51,6 +52,21 @@ impl Cpu {
     pub fn get_op_code(&mut self) -> u16 {
         return ((self.memory[self.pc as usize] as u16) << 8) + (self.memory[(self.pc+1) as usize] as u16);
     }
+
+    pub fn get_action(&self, opcode: u16) -> u8 {
+        let mut a: u8 = 0;
+        let mut res: u16;
+
+        for action in 0..NB_OPCODE {
+            res = self.jump.masque[action as usize] & opcode;
+
+            if res == self.jump.id[action as usize] {
+                a = action as u8;
+                break;
+            }
+        }
+        return a;
+    } 
 }
 
 pub struct Jump {
@@ -98,20 +114,4 @@ pub fn init_jump() -> Jump {
     m[33]= 0xF0FF; i[33]=0xF055;          /* FX55 */ 
     m[34]= 0xF0FF; i[34]=0xF065;          /* FX65 */ 
     return Jump{masque: m, id: i};
-}
-
-impl Jump {
-    pub fn get_action(&self, opcode: u16) -> u8 {
-        let mut action: u8 = 0;
-        let mut res: u16;
-
-        for action in 0..NB_OPCODE {
-            res = self.masque[action as usize] & opcode;
-
-            if res == self.id[action as usize] {
-                break;
-            }
-        }
-        return action;
-    }
 }
