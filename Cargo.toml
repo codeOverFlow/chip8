@@ -4,5 +4,4 @@ version = "0.1.0"
 authors = ["adrien Bodineau <adrien@dictanova.com>"]
 
 [dependencies]
-rand = "0.3"
-sdl2 = "0.20.1"
+rand = "0"
