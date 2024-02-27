@@ -152,7 +152,7 @@ impl Cpu {
                     let x = ((opcode & 0x0F00) >> 8) as usize;
                     let y = ((opcode & 0x00F0) >> 4) as usize;
                     self.v[0xF] = (self.v[x] < self.v[y]) as u8;
-                    let new_value = self.v[x].wrapping_sub(self.v[y]);
+                    let new_value = self.v[y].wrapping_sub(self.v[x]);
                     self.v[x] = new_value;
                 }
                 0xE => {
